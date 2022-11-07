@@ -37,4 +37,6 @@ explanation.
 A second concern relates to the ordered mode. This code runs by
 default in an unordered mode, because the random number generator
 creates an unordered source. If an ordered source is used (present
-but commented out)
+but commented out) it runs out of memory. That's expected. However,
+adding .unordered() to the stream does *not* correct this. That
+seems wrong.

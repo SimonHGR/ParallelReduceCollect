@@ -78,17 +78,18 @@ public final class Averager {
     final long start = System.nanoTime();
 
     // ordered random source
-//    DoubleStream.iterate(0.0, x -> ThreadLocalRandom.current().nextDouble(-1, +1))
-//        .limit(COUNT)
+    DoubleStream.iterate(0.0, x -> ThreadLocalRandom.current().nextDouble(-1, +1))
+        .limit(COUNT)
 
 // unordered random source
-    DoubleStream.generate(() -> ThreadLocalRandom.current().nextDouble(-1, +1))
-        .limit(COUNT)
+//    DoubleStream.generate(() -> ThreadLocalRandom.current().nextDouble(-1, +1))
+//        .limit(COUNT)
 
 // This is as slow, and as non-parallelizable as TLR..doubles!
 //    new Random().doubles(COUNT, -1, +1)
 
 //    ThreadLocalRandom.current().doubles(COUNT, -1, +1)
+        .unordered()
         .parallel()
         .collect(Average::new, Average::include, Average::merge)
         .get()
