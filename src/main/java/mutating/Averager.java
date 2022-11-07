@@ -24,9 +24,19 @@ package mutating;
  *    COUNT = 10_000_000_000
  *    sequential mode: time 90 seconds, rate 110 million
  *    parallel mode: time 430 seconds, rate 23 million
+ *
+ * JDK 17 17.0.1+12
+ **** USING ThreadLocalRandom.current().nextDouble(-1, +1)
+ *    inside DoubleStream.generate / iterate
+ *    rather than TLR..double()
+ *
+ *    COUNT = 10_000_000_000
+ *    sequential mode: time 35 seconds, rate 290 million
+ *    parallel mode: time 6.5 seconds, rate 1,500 million
  */
 
 import java.util.OptionalDouble;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.DoubleStream;
 
@@ -74,6 +84,9 @@ public final class Averager {
 // unordered random source
     DoubleStream.generate(() -> ThreadLocalRandom.current().nextDouble(-1, +1))
         .limit(COUNT)
+
+// This is as slow, and as non-parallelizable as TLR..doubles!
+//    new Random().doubles(COUNT, -1, +1)
 
 //    ThreadLocalRandom.current().doubles(COUNT, -1, +1)
         .parallel()

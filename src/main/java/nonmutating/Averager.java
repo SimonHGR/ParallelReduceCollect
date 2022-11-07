@@ -21,6 +21,17 @@
  *    COUNT = 4_000_000_000
  *    sequential mode: time ~ 90 seconds, rate ~70 million
  *    parallel mode: time ~160 seconds, rate ~24 million
+ *
+ * JDK 17 17.0.1+12
+ **** USING ThreadLocalRandom.current().nextDouble(-1, +1)
+ *    inside DoubleStream.generate / iterate
+ *    rather than TLR..double()
+ *
+ *    COUNT = 4_000_000_000
+ *    sequential mode: time ~ 37 seconds, rate ~105 million
+ *    parallel mode: time ~8 seconds, rate ~480 million
+ *    (parallel mode with ordered data from iterate() fails with OutOfMemoryError
+ *    which is not unexpected)
  */
 
 package nonmutating;
@@ -70,7 +81,7 @@ public final class Averager {
         .limit(COUNT)
 
 //    ThreadLocalRandom.current().doubles(COUNT, -1, +1)
-        .parallel()
+//        .parallel()
         .boxed()
         .reduce(new Average(0, 0), Average::include, Average::merge)
         .get()
