@@ -28,6 +28,7 @@ package nonmutating;
 
 import java.util.OptionalDouble;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.DoubleStream;
 
 final class Average {
   private final double sum;
@@ -60,8 +61,16 @@ public final class Averager {
     final long COUNT = 4_000_000_000L;
     final long start = System.nanoTime();
 
-    ThreadLocalRandom.current().doubles(COUNT, -1, +1)
-//        .parallel()
+// ordered random source
+//    DoubleStream.iterate(0.0, x -> ThreadLocalRandom.current().nextDouble(-1, +1))
+//        .limit(COUNT)
+
+// unordered random source
+    DoubleStream.generate(() -> ThreadLocalRandom.current().nextDouble(-1, +1))
+        .limit(COUNT)
+
+//    ThreadLocalRandom.current().doubles(COUNT, -1, +1)
+        .parallel()
         .boxed()
         .reduce(new Average(0, 0), Average::include, Average::merge)
         .get()
