@@ -2,6 +2,12 @@ This provides a simple example of using reduce and collect,
 both in sequential mode and parallel mode, in Java's Streams
 API.
 
+Note: I've made progress tracking down the performance "crisis"
+illustrated by this code that happened some time after Java 8.
+It seems that this is almost entirely related to the
+ThreadLocalRandom.doubles method. Using Stream.generate with
+ThreadLocalRandom.nextDouble behaves well.
+
 The operation has essentially no operations in the stream body,
 and the computational load of the terminal operation is also
 very simple, so it represents a severe corner case test for the
